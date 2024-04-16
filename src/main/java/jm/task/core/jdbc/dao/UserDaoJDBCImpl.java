@@ -12,8 +12,9 @@ public class UserDaoJDBCImpl implements UserDao {
     private final String sqlCommandCreate = "CREATE TABLE `users` ( id int NOT NULL AUTO_INCREMENT," +
             " name varchar(45) NOT NULL, lastName varchar(45) DEFAULT NULL, age int NOT NULL, PRIMARY KEY (id))";
     private final String sqlCommandDrop = "drop table Users";
+    private final String sqlCommandRemove = "DELETE from Users where ID=?";
     private final String sqlCommandSave = "insert into users (name, lastName, age) values (?,?,?)";
-    private final String sqlCommandSaveList = "DELETE from Users where ID=?";
+    private final String sqlCommandGetUsers = "select * from users";
     private final String sqlCommandClean = "DELETE from Users";
     private final Connection connection = Util.getConnection();
 
@@ -56,7 +57,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     // удаление User из таблицы по Id
     public void removeUserById(long id) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommandSaveList)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommandRemove)) {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -66,10 +67,9 @@ public class UserDaoJDBCImpl implements UserDao {
 
     // получение всех User из таблицы
     public List<User> getAllUsers() {
-        String sqlCommand = "select * from users";
         List<User> userArrayList = new ArrayList<>();
         try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(sqlCommand);
+            ResultSet resultSet = statement.executeQuery(sqlCommandGetUsers);
             while (resultSet.next()) {
                 User users = new User();
                 users.setId(resultSet.getLong("id"));
