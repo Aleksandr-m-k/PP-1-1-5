@@ -9,7 +9,7 @@ public class Util {
     private static final String DB_PASSWORD = "Master1985%#";
     private static Connection connection = null;
 
-    public Connection getConnection() {
+    public static Connection getConnection() {
         try {
             DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
         } catch (SQLException e) {
