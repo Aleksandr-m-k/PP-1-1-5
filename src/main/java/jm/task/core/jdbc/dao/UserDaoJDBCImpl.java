@@ -9,13 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
-    private final String sqlCommandCreate = "CREATE TABLE `users` ( id int NOT NULL AUTO_INCREMENT," +
-            " name varchar(45) NOT NULL, lastName varchar(45) DEFAULT NULL, age int NOT NULL, PRIMARY KEY (id))";
-    private final String sqlCommandDrop = "drop table Users";
-    private final String sqlCommandRemove = "DELETE from Users where ID=?";
-    private final String sqlCommandSave = "insert into users (name, lastName, age) values (?,?,?)";
-    private final String sqlCommandGetUsers = "select * from users";
-    private final String sqlCommandClean = "DELETE from Users";
     private final Connection connection = Util.getConnection();
 
     public UserDaoJDBCImpl() {
@@ -24,6 +17,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
     // создание таблицы
     public void createUsersTable() {
+        final String sqlCommandCreate = "CREATE TABLE `users` ( id int NOT NULL AUTO_INCREMENT," +
+                " name varchar(45) NOT NULL, lastName varchar(45) DEFAULT NULL, age int NOT NULL, PRIMARY KEY (id))";
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sqlCommandCreate);
             System.out.println("Таблица создана");
@@ -34,6 +29,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     // удаление таблицы
     public void dropUsersTable() {
+        final String sqlCommandDrop = "drop table Users";
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sqlCommandDrop);
             System.out.println("таблица удалена");
@@ -44,6 +40,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     // добавление User в таблицу
     public void saveUser(String name, String lastName, byte age) {
+        final String sqlCommandSave = "insert into users (name, lastName, age) values (?,?,?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommandSave)) {
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, lastName);
@@ -57,6 +54,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     // удаление User из таблицы по Id
     public void removeUserById(long id) {
+        final String sqlCommandRemove = "DELETE from Users where ID=?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommandRemove)) {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
@@ -67,6 +65,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     // получение всех User из таблицы
     public List<User> getAllUsers() {
+        final String sqlCommandGetUsers = "select * from users";
         List<User> userArrayList = new ArrayList<>();
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(sqlCommandGetUsers);
@@ -86,6 +85,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     // очистка содержания таблицы
     public void cleanUsersTable() {
+        final String sqlCommandClean = "DELETE from Users";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommandClean)) {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
